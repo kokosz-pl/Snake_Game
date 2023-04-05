@@ -14,15 +14,12 @@ public class Snake {
         this.coordinates.add(Arrays.asList(30, 20));
 
         for (int i = 1; i <= length; i++) {
-            this.coordinates.add(Arrays.asList(this.coordinates.get(0).get(0) - i * 10, this.coordinates.get(0).get(1)));
+            this.coordinates
+                    .add(Arrays.asList(this.coordinates.get(0).get(0) - i * 10, this.coordinates.get(0).get(1)));
 
             // System.out.println(coordinates);
         }
 
-    }
-
-    public void setLength(int new_lenght) {
-        this.length = new_lenght;
     }
 
     public int getLength() {
@@ -52,11 +49,21 @@ public class Snake {
     public void updateCoordinates() {
 
         for (int i = this.length; i > 0; i--) {
-            this.coordinates.set(i, Arrays.asList(this.coordinates.get(i - 1).get(0), this.coordinates.get(i - 1).get(1)));
+            this.coordinates.set(i,
+                    Arrays.asList(this.coordinates.get(i - 1).get(0), this.coordinates.get(i - 1).get(1)));
 
             // System.out.println(coordinates);
         }
-        System.out.println(this.coordinates);
+        // System.out.println(this.coordinates);
+    }
+
+    public void updateLenght(int x, int y) {
+
+        int head_x = getHead_x();
+        int head_y = getHead_y();
+
+        this.coordinates.add(0, Arrays.asList(head_x + x, head_y + y));
+        this.length += 1;
     }
 
 }

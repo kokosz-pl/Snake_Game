@@ -15,14 +15,19 @@ import java.awt.event.KeyEvent;
 
 public class Board extends JPanel {
 
+    private final int Width = 500;
+    private final int Height = 500;
+
     private Image head;
     private Image tail;
     private Image apple;
+    private Snake snake;
+    private int apple_x;
+    private int apple_y;
     private boolean up;
     private boolean down;
     private boolean left;
     private boolean right;
-    private Snake snake;
     List<List<Integer>> coordinates;
 
     public Board() {
@@ -31,7 +36,10 @@ public class Board extends JPanel {
         setBackground(Color.black);
         setFocusable(true);
 
-        setPreferredSize(new Dimension(500, 500));
+        setPreferredSize(new Dimension(Width, Height));
+
+        apple_x = 250;
+        apple_y = 250;
 
         snake = new Snake();
 
@@ -60,11 +68,14 @@ public class Board extends JPanel {
 
     private void drawIcons(Graphics g) {
 
+        System.out.println(snake.getHead_x() + " " + snake.getHead_y());
+
+
         coordinates = snake.getCoordinates();
 
         // System.out.println(coordinates);
 
-        g.drawImage(apple, 250, 250, this);
+        g.drawImage(apple, apple_x, apple_y, this);
         g.drawImage(head, snake.getHead_x(), snake.getHead_y(), this);
 
         for (int i = 1; i <= snake.getLength(); i++) {
@@ -85,6 +96,36 @@ public class Board extends JPanel {
     // repaint();
     // }
 
+    private void checkApple() {
+
+        if (snake.getHead_x() == apple_x && snake.getHead_y() == apple_y) {
+
+            if (up) {
+                snake.updateLenght(0, -10);
+            } else if (down) {
+                snake.updateLenght(0, 10);
+            } else if (right) {
+                snake.updateLenght(10, 0);
+            } else if (left) {
+                snake.updateLenght(-10, 0);
+            }
+
+        }
+
+    }
+
+    private void checkCollision() {
+
+        System.out.println(snake.getHead_x() + " " + snake.getHead_y());
+
+        if (snake.getHead_x() < 0 || snake.getHead_x() >= Width) {
+            System.out.println("End Game");
+        } else if (snake.getHead_y() < 0 || snake.getHead_y() >= Width) {
+            System.out.println("End Game");
+        }
+
+    }
+
     private void move() {
 
         snake.updateCoordinates();
@@ -98,8 +139,6 @@ public class Board extends JPanel {
         } else if (left) {
             snake.setHead_x(snake.getHead_x() - 10);
         }
-
-        System.out.println(snake.getCoordinates());
 
     }
 
@@ -134,8 +173,9 @@ public class Board extends JPanel {
                 up = false;
                 down = false;
             }
-
             move();
+            checkCollision();
+            checkApple();
             repaint();
 
         }
