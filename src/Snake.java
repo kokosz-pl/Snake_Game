@@ -16,8 +16,6 @@ public class Snake {
         for (int i = 1; i <= length; i++) {
             this.coordinates
                     .add(Arrays.asList(this.coordinates.get(0).get(0) - i * 10, this.coordinates.get(0).get(1)));
-
-            // System.out.println(coordinates);
         }
 
     }
@@ -51,19 +49,34 @@ public class Snake {
         for (int i = this.length; i > 0; i--) {
             this.coordinates.set(i,
                     Arrays.asList(this.coordinates.get(i - 1).get(0), this.coordinates.get(i - 1).get(1)));
-
-            // System.out.println(coordinates);
         }
-        // System.out.println(this.coordinates);
     }
 
     public void updateLenght(int x, int y) {
 
-        int head_x = getHead_x();
-        int head_y = getHead_y();
 
-        this.coordinates.add(0, Arrays.asList(head_x + x, head_y + y));
+        this.coordinates.add(0, Arrays.asList(getHead_x() + x, getHead_y() + y));
         this.length += 1;
+    }
+
+    public boolean checkNewApple(int x, int y) {
+
+        for (int i = 0; i < this.length; i++) {
+            if ((this.coordinates.get(i)).equals(Arrays.asList(x, y))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean selfCollision() {
+
+        for (int i = 3; i <= this.length; i++) {
+            if ((this.coordinates.get(0)).equals(this.coordinates.get(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
