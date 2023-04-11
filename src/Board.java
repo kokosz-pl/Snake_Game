@@ -1,5 +1,3 @@
-import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -18,8 +16,9 @@ import java.awt.event.KeyEvent;
 
 public class Board extends JPanel implements ActionListener {
 
-    private final int Width = 500;
-    private final int Height = 500;
+    private final static int Width = ConstValues.WINDOW_WIDTH.value;
+    private final static int Height = ConstValues.WINDOW_HEIGHT.value;
+    private final static int BallSize = ConstValues.BALL_SIZE.value;
     private boolean in_game;
 
     private Timer timer;
@@ -42,38 +41,38 @@ public class Board extends JPanel implements ActionListener {
 
         setPreferredSize(new Dimension(Width, Height));
 
-        apple_x = 250;
-        apple_y = 250;
+        this.apple_x = 250;
+        this.apple_y = 250;
 
-        snake = new Snake();
+        this.snake = new Snake();
 
-        in_game = true;
-        right = true;
+        this.in_game = true;
+        this.right = true;
 
         loadImages();
 
-        timer = new Timer(210, this);
-        timer.start();
+        this.timer = new Timer(210, this);
+        this.timer.start();
 
     }
 
     private void loadImages() {
 
         ImageIcon icon = new ImageIcon("./Pictures/apple.png");
-        apple = icon.getImage();
+        this.apple = icon.getImage();
 
         icon = new ImageIcon("./Pictures/head.png");
-        head = icon.getImage();
+        this.head = icon.getImage();
 
         icon = new ImageIcon("./Pictures/dot.png");
-        tail = icon.getImage();
+        this.tail = icon.getImage();
 
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (in_game) {
+        if (this.in_game) {
             drawIcons(g);
         } else {
             endGame(g);
@@ -82,20 +81,21 @@ public class Board extends JPanel implements ActionListener {
 
     private void drawIcons(Graphics g) {
 
-        List<List<Integer>> coordinates = snake.getCoordinates();
+        int[] coordinates_arr = new int[2];
 
-        g.drawImage(apple, apple_x, apple_y, this);
-        g.drawImage(head, snake.getHead_x(), snake.getHead_y(), this);
+        g.drawImage(this.apple, this.apple_x, this.apple_y, this);
+        g.drawImage(this.head, snake.getHead_x(), snake.getHead_y(), this);
 
         for (int i = 1; i <= snake.getLength(); i++) {
-            g.drawImage(tail, coordinates.get(i).get(0), coordinates.get(i).get(1), this);
+            coordinates_arr = snake.getCoordinates(i);
+            g.drawImage(this.tail, coordinates_arr[0], coordinates_arr[1], this);
         }
 
-        for (int i = 1; i <= Width / 10; i++) {
-            g.drawLine(0, i * 10, Width, i * 10);
+        for (int i = 1; i <= Width / BallSize; i++) {
+            g.drawLine(0, i * BallSize, Width, i * BallSize);
         }
-        for (int j = 1; j <= Height / 10; j++) {
-            g.drawLine(j * 10, 0, j * 10, Height);
+        for (int j = 1; j <= Height / BallSize; j++) {
+            g.drawLine(j * BallSize, 0, j * BallSize, Height);
         }
         Toolkit.getDefaultToolkit().sync();
 
@@ -106,7 +106,7 @@ public class Board extends JPanel implements ActionListener {
         timer.stop();
 
         String msg = "Game Over";
-        Font small = new Font("Helvetica", Font.BOLD, 14);
+        Font small = new Font("Arial", Font.BOLD, 14);
         FontMetrics metr = getFontMetrics(small);
 
         g.setColor(Color.white);
@@ -123,23 +123,23 @@ public class Board extends JPanel implements ActionListener {
         move();
         appleCollision();
         if (wallCollision() || snake.selfCollision()) {
-            in_game = false;
+            this.in_game = false;
         }
         repaint();
     }
 
     private void appleCollision() {
 
-        if (snake.getHead_x() == apple_x && snake.getHead_y() == apple_y) {
+        if (snake.getHead_x() == this.apple_x && snake.getHead_y() == this.apple_y) {
 
             if (up) {
-                snake.updateLenght(0, -10);
+                snake.updateLenght(0, -BallSize);
             } else if (down) {
-                snake.updateLenght(0, 10);
+                snake.updateLenght(0, BallSize);
             } else if (right) {
-                snake.updateLenght(10, 0);
+                snake.updateLenght(BallSize, 0);
             } else if (left) {
-                snake.updateLenght(-10, 0);
+                snake.updateLenght(-BallSize, 0);
             }
 
             newApple();
@@ -155,15 +155,15 @@ public class Board extends JPanel implements ActionListener {
         while (end) {
 
             int x = (int) (Math.random() * 500);
-            x /= 10;
+            x /= BallSize;
 
             int y = (int) (Math.random() * 500);
-            y /= 10;
+            y /= BallSize;
 
             if (snake.checkNewApple(x * 10, y * 10)) {
                 end = false;
-                this.apple_x = x * 10;
-                this.apple_y = y * 10;
+                this.apple_x = x * BallSize;
+                this.apple_y = y * BallSize;
             }
         }
 
@@ -183,13 +183,13 @@ public class Board extends JPanel implements ActionListener {
         snake.updateCoordinates();
 
         if (up) {
-            snake.setHead_y(snake.getHead_y() - 10);
+            snake.setHead_y(snake.getHead_y() - BallSize);
         } else if (down) {
-            snake.setHead_y(snake.getHead_y() + 10);
+            snake.setHead_y(snake.getHead_y() + BallSize);
         } else if (right) {
-            snake.setHead_x(snake.getHead_x() + 10);
+            snake.setHead_x(snake.getHead_x() + BallSize);
         } else if (left) {
-            snake.setHead_x(snake.getHead_x() - 10);
+            snake.setHead_x(snake.getHead_x() - BallSize);
         }
 
     }

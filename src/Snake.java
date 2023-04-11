@@ -4,18 +4,19 @@ import java.util.List;
 
 public class Snake {
 
+    private static int ballSize = ConstValues.BALL_SIZE.value;;
     private int length;
     private List<List<Integer>> coordinates = new ArrayList<>();
 
     public Snake() {
 
-        length = 3;
+        this.length = 3;
 
-        this.coordinates.add(Arrays.asList(30, 20));
+        this.coordinates.add(Arrays.asList(3 * ballSize, 2 * ballSize));
 
         for (int i = 1; i <= length; i++) {
             this.coordinates
-                    .add(Arrays.asList(this.coordinates.get(0).get(0) - i * 10, this.coordinates.get(0).get(1)));
+                    .add(Arrays.asList(this.coordinates.get(0).get(0) - i * ballSize, this.coordinates.get(0).get(1)));
         }
 
     }
@@ -40,8 +41,10 @@ public class Snake {
         return this.coordinates.get(0).get(1);
     }
 
-    public List<List<Integer>> getCoordinates() {
-        return new ArrayList<>(this.coordinates);
+    public int[] getCoordinates(int index) {
+        int x_corr = this.coordinates.get(index).get(0);
+        int y_corr = this.coordinates.get(index).get(1);
+        return new int[] {x_corr, y_corr};
     }
 
     public void updateCoordinates() {
@@ -53,7 +56,6 @@ public class Snake {
     }
 
     public void updateLenght(int x, int y) {
-
 
         this.coordinates.add(0, Arrays.asList(getHead_x() + x, getHead_y() + y));
         this.length += 1;
