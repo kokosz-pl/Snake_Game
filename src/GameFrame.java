@@ -1,42 +1,22 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 
-public class GameFrame extends JFrame implements ActionListener{
+public class GameFrame extends JFrame{
 
-    Menu menu;
     Board gameBoard;
 
-    public GameFrame(){
+    public GameFrame() {
 
-        this.menu = new Menu();
-        add(this.menu);
-        
-        this.menu.exitButton.addActionListener(this);
+       this.gameBoard = new Board(); 
+       this.add(this.gameBoard);
 
 
-        setResizable(false);
-        pack();
-        
-        setTitle("Snake");
-        setLocationRelativeTo(null);
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
+        this.pack();
+
+        this.setTitle("Snake");
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == menu.exitButton) {
-            setVisible(false);
-            dispose();
-            System.exit(0);
-            
-        }
-    }
-
-
-
-
 }

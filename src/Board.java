@@ -1,5 +1,8 @@
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.Timer;
 
 import java.awt.Graphics;
@@ -11,15 +14,12 @@ import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class Board extends JPanel implements ActionListener {
 
     private final static int Width = ConstValues.WINDOW_WIDTH.value;
     private final static int Height = ConstValues.WINDOW_HEIGHT.value;
     private final static int BallSize = ConstValues.BALL_SIZE.value;
-    private boolean in_game;
 
     private Timer timer;
     private Image head;
@@ -32,14 +32,35 @@ public class Board extends JPanel implements ActionListener {
     private boolean down;
     private boolean left;
     private boolean right;
+    private boolean in_game;
+
+    Action upAction;
+    Action downAction;
+    Action leftAction;
+    Action rightAction;
 
     public Board() {
 
-        addKeyListener(new DirectionListener());
-        setBackground(Color.black);
-        setFocusable(true);
+        this.setBackground(Color.black);
+        this.setPreferredSize(new Dimension(Width, Height));
 
-        setPreferredSize(new Dimension(Width, Height));
+        upAction = new UpAction();
+        downAction = new DownAction();
+        leftAction = new LeftAction();
+        rightAction = new RightAction();
+
+        this.getInputMap().put(KeyStroke.getKeyStroke("UP"), "upAction");
+        this.getActionMap().put("upAction", upAction);
+
+        this.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "downAction");
+        this.getActionMap().put("downAction", downAction);
+
+        this.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftAction");
+        this.getActionMap().put("leftAction", leftAction);
+
+        this.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "rightAction");
+        this.getActionMap().put("rightAction", rightAction);
+
 
         this.apple_x = 250;
         this.apple_y = 250;
@@ -125,6 +146,7 @@ public class Board extends JPanel implements ActionListener {
         if (wallCollision() || snake.selfCollision()) {
             this.in_game = false;
         }
+
         repaint();
     }
 
@@ -194,34 +216,41 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
-    private class DirectionListener extends KeyAdapter {
+    public class UpAction extends AbstractAction {
 
         @Override
-        public void keyPressed(KeyEvent evt) {
+        public void actionPerformed(ActionEvent e) {
 
-            int key = evt.getKeyCode();
-
-            if ((key == KeyEvent.VK_UP) && (!down)) {
-
+            if (!down) {
                 up = true;
                 right = false;
                 left = false;
             }
+        }
 
-            if ((key == KeyEvent.VK_DOWN) && (!up)) {
+    }
+
+    public class DownAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if ((!up)) {
                 down = true;
                 right = false;
                 left = false;
             }
+        }
 
-            if ((key == KeyEvent.VK_LEFT) && (!right)) {
+    }
+
+    public class LeftAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if ((!right)) {
                 left = true;
-                up = false;
-                down = false;
-            }
-
-            if ((key == KeyEvent.VK_RIGHT) && (!left)) {
-                right = true;
                 up = false;
                 down = false;
             }
@@ -229,4 +258,17 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
+    public class RightAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+            if (!left) {
+                right = true;
+                up = false;
+                down = false;
+            }
+        }
+
+    }
 }
