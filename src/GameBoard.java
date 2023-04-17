@@ -1,9 +1,6 @@
-import javax.swing.AbstractAction;
-import javax.swing.Action;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.Timer;
 
 import java.awt.Graphics;
 import java.awt.Color;
@@ -11,17 +8,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Image;
-import java.awt.event.ActionListener;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 
-public class Board extends JPanel implements ActionListener {
+public class GameBoard extends JPanel {
 
     private final static int Width = ConstValues.WINDOW_WIDTH.value;
     private final static int Height = ConstValues.WINDOW_HEIGHT.value;
     private final static int BallSize = ConstValues.BALL_SIZE.value;
 
-    private Timer timer;
     private Image head;
     private Image tail;
     private Image apple;
@@ -32,48 +26,72 @@ public class Board extends JPanel implements ActionListener {
     private boolean down;
     private boolean left;
     private boolean right;
-    private boolean in_game;
+    private boolean inGame;
+    private int score;
 
-    Action upAction;
-    Action downAction;
-    Action leftAction;
-    Action rightAction;
-
-    public Board() {
+    public GameBoard() {
 
         this.setBackground(Color.black);
         this.setPreferredSize(new Dimension(Width, Height));
 
-        upAction = new UpAction();
-        downAction = new DownAction();
-        leftAction = new LeftAction();
-        rightAction = new RightAction();
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("UP"), "upAction");
-        this.getActionMap().put("upAction", upAction);
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "downAction");
-        this.getActionMap().put("downAction", downAction);
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftAction");
-        this.getActionMap().put("leftAction", leftAction);
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "rightAction");
-        this.getActionMap().put("rightAction", rightAction);
-
-
         this.apple_x = 250;
         this.apple_y = 250;
+        this.score = 0;
 
         this.snake = new Snake();
 
-        this.in_game = true;
+        this.inGame = true;
         this.right = true;
 
         loadImages();
 
-        this.timer = new Timer(210, this);
-        this.timer.start();
+    }
+
+    public boolean getLeft() {
+        return this.left;
+    }
+
+    public void setLeft(boolean newLeft) {
+        this.left = newLeft;
+    }
+
+    public boolean getRight() {
+        return this.right;
+    }
+
+    public void setRight(boolean newRight) {
+        this.right = newRight;
+    }
+
+    public boolean getUp() {
+        return this.up;
+    }
+
+    public void setUp(boolean newUp) {
+        this.up = newUp;
+    }
+
+    public boolean getDown() {
+        return this.down;
+    }
+
+    public void setDown(boolean newDown) {
+        this.down = newDown;
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public boolean getInGame() {
+        return this.inGame;
+    }
+
+    public void restartGame() {
+        this.remove(this);
+        this.add(new GameBoard());
+        this.revalidate();
+        this.repaint();
 
     }
 
@@ -93,7 +111,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (this.in_game) {
+        if (this.inGame) {
             drawIcons(g);
         } else {
             endGame(g);
@@ -124,30 +142,17 @@ public class Board extends JPanel implements ActionListener {
 
     private void endGame(Graphics g) {
 
-        timer.stop();
-
         String msg = "Game Over";
         Font small = new Font("Arial", Font.BOLD, 14);
         FontMetrics metr = getFontMetrics(small);
 
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(msg, (Width - metr.stringWidth(msg)) / 2, Height / 2);
-    }
+        g.drawString(msg, (Width - metr.stringWidth(msg)) / 2, (int) (Height * 0.4));
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        update();
-    }
+        msg = "Press Space to Restart";
+        g.drawString(msg, (Width - metr.stringWidth(msg)) / 2, (int) (Height * 0.6));
 
-    private void update() {
-        move();
-        appleCollision();
-        if (wallCollision() || snake.selfCollision()) {
-            this.in_game = false;
-        }
-
-        repaint();
     }
 
     private void appleCollision() {
@@ -164,6 +169,7 @@ public class Board extends JPanel implements ActionListener {
                 snake.updateLenght(-BallSize, 0);
             }
 
+            this.score++;
             newApple();
 
         }
@@ -216,59 +222,14 @@ public class Board extends JPanel implements ActionListener {
 
     }
 
-    public class UpAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            if (!down) {
-                up = true;
-                right = false;
-                left = false;
-            }
+    public void update() {
+        move();
+        appleCollision();
+        if (wallCollision() || snake.selfCollision()) {
+            this.inGame = false;
         }
 
+        repaint();
     }
 
-    public class DownAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            if ((!up)) {
-                down = true;
-                right = false;
-                left = false;
-            }
-        }
-
-    }
-
-    public class LeftAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            if ((!right)) {
-                left = true;
-                up = false;
-                down = false;
-            }
-        }
-
-    }
-
-    public class RightAction extends AbstractAction {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-            if (!left) {
-                right = true;
-                up = false;
-                down = false;
-            }
-        }
-
-    }
 }
