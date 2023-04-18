@@ -87,14 +87,6 @@ public class GameBoard extends JPanel {
         return this.inGame;
     }
 
-    public void restartGame() {
-        this.remove(this);
-        this.add(new GameBoard());
-        this.revalidate();
-        this.repaint();
-
-    }
-
     private void loadImages() {
 
         ImageIcon icon = new ImageIcon("./Pictures/apple.png");
@@ -151,6 +143,9 @@ public class GameBoard extends JPanel {
         g.drawString(msg, (Width - metr.stringWidth(msg)) / 2, (int) (Height * 0.4));
 
         msg = "Press Space to Restart";
+        g.drawString(msg, (Width - metr.stringWidth(msg)) / 2, (int) (Height * 0.5));
+
+        msg = "Press ESC to Quit";
         g.drawString(msg, (Width - metr.stringWidth(msg)) / 2, (int) (Height * 0.6));
 
     }

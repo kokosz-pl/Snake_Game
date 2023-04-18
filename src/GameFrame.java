@@ -18,36 +18,53 @@ public class GameFrame extends JFrame implements ActionListener {
     private ScoreBoard scoreBoard;
     private JPanel userInterface;
 
-    Action upAction;
-    Action downAction;
-    Action leftAction;
-    Action rightAction;
-    Action restartAction;
+    private GridBagLayout layout;
+    private GridBagConstraints gridConstraints;
+
+    private Action upAction;
+    private Action downAction;
+    private Action leftAction;
+    private Action rightAction;
+    private Action restartAction;
+    private Action closeAction;
+    private Action startAction;
+
+    private boolean inStartScreen;
 
     public GameFrame() {
 
-        setUI();
+        this.userInterface = new StartScreen();
+        this.add(this.userInterface);
+        inStartScreen = true;
 
         upAction = new UpAction();
         downAction = new DownAction();
         leftAction = new LeftAction();
         rightAction = new RightAction();
         restartAction = new RestartAction();
+        closeAction = new CloseAction();
+        startAction = new StartAction();
 
-        this.gameBoard.getInputMap().put(KeyStroke.getKeyStroke("UP"), "upAction");
-        this.gameBoard.getActionMap().put("upAction", upAction);
+        this.userInterface.getInputMap().put(KeyStroke.getKeyStroke("UP"), "upAction");
+        this.userInterface.getActionMap().put("upAction", upAction);
 
-        this.gameBoard.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "downAction");
-        this.gameBoard.getActionMap().put("downAction", downAction);
+        this.userInterface.getInputMap().put(KeyStroke.getKeyStroke("DOWN"), "downAction");
+        this.userInterface.getActionMap().put("downAction", downAction);
 
-        this.gameBoard.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftAction");
-        this.gameBoard.getActionMap().put("leftAction", leftAction);
+        this.userInterface.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftAction");
+        this.userInterface.getActionMap().put("leftAction", leftAction);
 
-        this.gameBoard.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "rightAction");
-        this.gameBoard.getActionMap().put("rightAction", rightAction);
+        this.userInterface.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"), "rightAction");
+        this.userInterface.getActionMap().put("rightAction", rightAction);
 
-        this.gameBoard.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "restartAction");
-        this.gameBoard.getActionMap().put("restartAction", restartAction);
+        this.userInterface.getInputMap().put(KeyStroke.getKeyStroke("SPACE"), "restartAction");
+        this.userInterface.getActionMap().put("restartAction", restartAction);
+
+        this.userInterface.getInputMap().put(KeyStroke.getKeyStroke("ESCAPE"), "closeAction");
+        this.userInterface.getActionMap().put("closeAction", closeAction);
+
+        this.userInterface.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "startAction");
+        this.userInterface.getActionMap().put("startAction", startAction);
 
         this.setResizable(false);
         this.pack();
@@ -61,11 +78,14 @@ public class GameFrame extends JFrame implements ActionListener {
 
     private void setUI() {
 
+        inStartScreen = false;
+
+        this.userInterface = null;
         this.userInterface = new JPanel();
 
-        GridBagLayout layout = new GridBagLayout();
+        layout = new GridBagLayout();
         this.userInterface.setLayout(layout);
-        GridBagConstraints gridConstraints = new GridBagConstraints();
+        gridConstraints = new GridBagConstraints();
 
         this.scoreBoard = new ScoreBoard();
         gridConstraints.gridx = 0;
@@ -81,9 +101,27 @@ public class GameFrame extends JFrame implements ActionListener {
 
         this.add(this.userInterface);
 
+        this.revalidate();
+
         timer = new Timer(210, this);
         timer.start();
 
+    }
+
+    private void restartGame() {
+        this.gameBoard = null;
+        this.gameBoard = new GameBoard();
+
+        this.gridConstraints.gridx = 0;
+        this.gridConstraints.gridy = 1;
+        this.layout.setConstraints(this.gameBoard, this.gridConstraints);
+        this.userInterface.add(this.gameBoard);
+    }
+
+    private void closeWindow() {
+        this.setVisible(false);
+        this.dispose();
+        System.exit(0);
     }
 
     @Override
@@ -157,9 +195,31 @@ public class GameFrame extends JFrame implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            timer.start();
-            gameBoard.restartGame();
-            
+            if (!gameBoard.getInGame()) {
+                timer.start();
+                restartGame();
+            }
+
+        }
+
+    }
+
+    public class StartAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (inStartScreen) {
+                setUI();
+            }
+        }
+
+    }
+
+    public class CloseAction extends AbstractAction {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            closeWindow();
         }
 
     }
