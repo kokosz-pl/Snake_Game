@@ -34,8 +34,8 @@ public class GameBoard extends JPanel {
         this.setBackground(Color.black);
         this.setPreferredSize(new Dimension(Width, Height));
 
-        this.apple_x = 250;
-        this.apple_y = 250;
+        this.apple_x = Width / 2;
+        this.apple_y = Height / 2;
         this.score = 0;
 
         this.snake = new Snake();
@@ -173,22 +173,10 @@ public class GameBoard extends JPanel {
 
     private void newApple() {
 
-        boolean end = true;
+        int[] newCoordinates = snake.newApplePosition();
 
-        while (end) {
-
-            int x = (int) (Math.random() * 500);
-            x /= BallSize;
-
-            int y = (int) (Math.random() * 500);
-            y /= BallSize;
-
-            if (snake.checkNewApple(x * 10, y * 10)) {
-                end = false;
-                this.apple_x = x * BallSize;
-                this.apple_y = y * BallSize;
-            }
-        }
+        this.apple_x = newCoordinates[0];
+        this.apple_y = newCoordinates[1];
 
     }
 
@@ -203,16 +191,14 @@ public class GameBoard extends JPanel {
 
     private void move() {
 
-        snake.updateCoordinates();
-
         if (up) {
-            snake.setHead_y(snake.getHead_y() - BallSize);
+            snake.updateCoordinates(0, -BallSize);
         } else if (down) {
-            snake.setHead_y(snake.getHead_y() + BallSize);
+            snake.updateCoordinates(0, BallSize);
         } else if (right) {
-            snake.setHead_x(snake.getHead_x() + BallSize);
+            snake.updateCoordinates(BallSize, 0);
         } else if (left) {
-            snake.setHead_x(snake.getHead_x() - BallSize);
+            snake.updateCoordinates(-BallSize, 0);
         }
 
     }

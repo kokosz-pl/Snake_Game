@@ -78,8 +78,6 @@ public class GameFrame extends JFrame implements ActionListener {
 
     private void setUI() {
 
-        inStartScreen = false;
-
         this.userInterface = null;
         this.userInterface = new JPanel();
 
@@ -116,6 +114,8 @@ public class GameFrame extends JFrame implements ActionListener {
         this.gridConstraints.gridy = 1;
         this.layout.setConstraints(this.gameBoard, this.gridConstraints);
         this.userInterface.add(this.gameBoard);
+
+        timer.start();
     }
 
     private void closeWindow() {
@@ -195,9 +195,11 @@ public class GameFrame extends JFrame implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!gameBoard.getInGame()) {
-                timer.start();
-                restartGame();
+
+            if (gameBoard != null) {
+                if (!gameBoard.getInGame()) {
+                    restartGame();
+                }
             }
 
         }
@@ -209,6 +211,7 @@ public class GameFrame extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (inStartScreen) {
+                inStartScreen = false;
                 setUI();
             }
         }
