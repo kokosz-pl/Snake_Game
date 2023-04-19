@@ -140,10 +140,12 @@ public class GameFrame extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if (!gameBoard.getDown()) {
-                gameBoard.setUp(true);
-                gameBoard.setRight(false);
-                gameBoard.setLeft(false);
+            if (gameBoard != null) {
+                if (!gameBoard.getDown()) {
+                    gameBoard.setUp(true);
+                    gameBoard.setRight(false);
+                    gameBoard.setLeft(false);
+                }
             }
         }
 
@@ -154,13 +156,15 @@ public class GameFrame extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if ((!gameBoard.getUp())) {
-                gameBoard.setDown(true);
-                gameBoard.setRight(false);
-                gameBoard.setLeft(false);
+            if (gameBoard != null) {
+                if ((!gameBoard.getUp())) {
+                    gameBoard.setDown(true);
+                    gameBoard.setRight(false);
+                    gameBoard.setLeft(false);
+                }
             }
-        }
 
+        }
     }
 
     public class LeftAction extends AbstractAction {
@@ -168,10 +172,12 @@ public class GameFrame extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if ((!gameBoard.getRight())) {
-                gameBoard.setLeft(true);
-                gameBoard.setUp(false);
-                gameBoard.setDown(false);
+            if (gameBoard != null) {
+                if ((!gameBoard.getRight())) {
+                    gameBoard.setLeft(true);
+                    gameBoard.setUp(false);
+                    gameBoard.setDown(false);
+                }
             }
         }
 
@@ -182,10 +188,12 @@ public class GameFrame extends JFrame implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if (!gameBoard.getLeft()) {
-                gameBoard.setRight(true);
-                gameBoard.setUp(false);
-                gameBoard.setDown(false);
+            if (gameBoard != null) {
+                if (!gameBoard.getLeft()) {
+                    gameBoard.setRight(true);
+                    gameBoard.setUp(false);
+                    gameBoard.setDown(false);
+                }
             }
         }
 
