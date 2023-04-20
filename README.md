@@ -19,7 +19,7 @@ To start the game follow the instructions in the window. This will update it int
 
 ![Game Screenshot](./md_imgs/game_screenshot.png)
 
-Whenever the game ends, the window will be updated to the final stage:
+Whenever the game ends, the window will be updated to its final form:
 
 ![Endgame Screenshot](./md_imgs/end_screen.png)
 
